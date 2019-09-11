@@ -6,29 +6,33 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ./volumes/node0/brick0:/var/gluster/brick0:Z
+      - ./volumes/node0/bricks:/var/gluster/bricks:Z
       - ./volumes/node0/state:/var/lib/glusterd:Z
-      - ./start-master.sh:/root/start-master.sh:ro
+      - ./start.sh:/root/start.sh:ro
     restart: unless-stopped
     depends_on:
       - node1
       - node2
-    command: /root/start-master.sh node1 node2
+    command: /root/start.sh master node1 node2
 
   node1:
     build:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ./volumes/node1/brick0:/var/gluster/brick0:Z
+      - ./volumes/node1/bricks:/var/gluster/bricks:Z
       - ./volumes/node1/state:/var/lib/glusterd:Z
+      - ./start.sh:/root/start.sh:ro
     restart: unless-stopped
+    command: /root/start.sh peer
 
   node2:
     build:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ./volumes/node2/brick0:/var/gluster/brick0:Z
+      - ./volumes/node2/bricks:/var/gluster/bricks:Z
       - ./volumes/node2/state:/var/lib/glusterd:Z
+      - ./start.sh:/root/start.sh:ro
     restart: unless-stopped
+    command: /root/start.sh peer
