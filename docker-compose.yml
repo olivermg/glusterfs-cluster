@@ -9,6 +9,8 @@ services:
       - ./volumes/node0/bricks:/var/gluster/bricks:Z
       - ./volumes/node0/state:/var/lib/glusterd:Z
       - ./start.sh:/root/start.sh:ro
+    cap_add:
+      - CAP_SYS_ADMIN
     restart: unless-stopped
     depends_on:
       - node1
@@ -23,6 +25,8 @@ services:
       - ./volumes/node1/bricks:/var/gluster/bricks:Z
       - ./volumes/node1/state:/var/lib/glusterd:Z
       - ./start.sh:/root/start.sh:ro
+    cap_add:
+      - CAP_SYS_ADMIN
     restart: unless-stopped
     command: /root/start.sh peer
 
@@ -34,5 +38,7 @@ services:
       - ./volumes/node2/bricks:/var/gluster/bricks:Z
       - ./volumes/node2/state:/var/lib/glusterd:Z
       - ./start.sh:/root/start.sh:ro
+    cap_add:
+      - CAP_SYS_ADMIN
     restart: unless-stopped
     command: /root/start.sh peer
