@@ -3,4 +3,4 @@ FROM archlinux/base
 RUN pacman --noconfirm -Sy && \
     pacman --noconfirm -S glusterfs grep
 
-CMD glusterd -N
+CMD mkdir -p /var/gluster/bricks/brick0 && glusterd -N
