@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ./volumes/node0/data:/var/gluster/data:Z
+      - ./volumes/node0/brick0:/var/gluster/brick0:Z
       - ./volumes/node0/state:/var/lib/glusterd:Z
       - ./start-master.sh:/root/start-master.sh:ro
     restart: unless-stopped
@@ -20,7 +20,7 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ./volumes/node1/data:/var/gluster/data:Z
+      - ./volumes/node1/brick0:/var/gluster/brick0:Z
       - ./volumes/node1/state:/var/lib/glusterd:Z
     restart: unless-stopped
 
@@ -29,6 +29,6 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ./volumes/node2/data:/var/gluster/data:Z
+      - ./volumes/node2/brick0:/var/gluster/brick0:Z
       - ./volumes/node2/state:/var/lib/glusterd:Z
     restart: unless-stopped
