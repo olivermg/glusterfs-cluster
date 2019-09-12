@@ -24,6 +24,7 @@ services:
 #      - "49161:49161/tcp"
     cap_add:
       - CAP_SYS_ADMIN
+#      - CAP_NET_ADMIN  # just for debigging of network traffic
     devices:
       - /dev/fuse  # for client usage, i.e. mounting glusterfs volumes
     restart: unless-stopped
