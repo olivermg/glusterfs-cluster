@@ -24,6 +24,8 @@ services:
 #      - "49161:49161/tcp"
     cap_add:
       - CAP_SYS_ADMIN
+    devices:
+      - /dev/fuse  # for client usage, i.e. mounting glusterfs volumes
     restart: unless-stopped
     depends_on:
       - node1
@@ -56,20 +58,20 @@ services:
     restart: unless-stopped
     command: ["peer", "10"]
 
-  client:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    volumes:
-      - ./volumes/client/data:/var/gluster:Z
-      - ./entrypoint.sh:/root/entrypoint.sh:ro
-    devices:
-      - /dev/fuse
-    cap_add:
-      - CAP_SYS_ADMIN
-    restart: unless-stopped
-    depends_on:
-      - node0
-      - node1
-      - node2
-    command: ["client", "10", "node0:/volrd0", "/var/gluster/data"]
+#  client:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    volumes:
+#      - ./volumes/client/data:/var/gluster:Z
+#      - ./entrypoint.sh:/root/entrypoint.sh:ro
+#    devices:
+#      - /dev/fuse
+#    cap_add:
+#      - CAP_SYS_ADMIN
+#    restart: unless-stopped
+#    depends_on:
+#      - node0
+#      - node1
+#      - node2
+#    command: ["client", "10", "node0:/volrd0", "/var/gluster/data"]
