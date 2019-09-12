@@ -2,10 +2,15 @@
 
 MODE=$1
 shift
-echo "Starting in $MODE mode"
+BRICKS=$1
+shift
+echo "Starting in $MODE mode with $BRICKS bricks"
 
 # make sure our brick folder(s) exist(s):
-mkdir -p /var/gluster/bricks/brick0
+for N in $(seq $BRICKS); do
+    N0=$(( $N - 1 ))
+    mkdir -p /var/gluster/brick${N0}
+done
 
 # start glusterd and give it some time to do so:
 echo "Starting glusterd..."
