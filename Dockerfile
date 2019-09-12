@@ -3,4 +3,6 @@ FROM archlinux/base
 RUN pacman --noconfirm -Sy && \
     pacman --noconfirm -S glusterfs grep
 
-CMD mkdir -p /var/gluster/bricks/brick0 && glusterd -N
+COPY entrypoint.sh /root/entrypoint.sh
+
+ENTRYPOINT ["/root/entrypoint.sh"]

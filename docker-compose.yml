@@ -6,39 +6,36 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ./volumes/node0/bricks:/var/gluster/bricks:Z
+      - ./volumes/node0/bricks:/var/gluster:Z
       - ./volumes/node0/state:/var/lib/glusterd:Z
-      - ./start.sh:/root/start.sh:ro
     cap_add:
       - CAP_SYS_ADMIN
     restart: unless-stopped
     depends_on:
       - node1
       - node2
-    command: /root/start.sh master node1 node2
+    command: ["master", "10", "node1", "node2"]
 
   node1:
     build:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ./volumes/node1/bricks:/var/gluster/bricks:Z
+      - ./volumes/node1/bricks:/var/gluster:Z
       - ./volumes/node1/state:/var/lib/glusterd:Z
-      - ./start.sh:/root/start.sh:ro
     cap_add:
       - CAP_SYS_ADMIN
     restart: unless-stopped
-    command: /root/start.sh peer
+    command: ["peer", "10"]
 
   node2:
     build:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ./volumes/node2/bricks:/var/gluster/bricks:Z
+      - ./volumes/node2/bricks:/var/gluster:Z
       - ./volumes/node2/state:/var/lib/glusterd:Z
-      - ./start.sh:/root/start.sh:ro
     cap_add:
       - CAP_SYS_ADMIN
     restart: unless-stopped
-    command: /root/start.sh peer
+    command: ["peer", "10"]
