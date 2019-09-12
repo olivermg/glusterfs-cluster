@@ -44,4 +44,5 @@ if [ "$MODE" = "client" ]; then
     sleep infinity &
 fi
 
+trap "kill %1" SIGTERM SIGINT  # for quicker shutdown
 wait  # wait indefinitely for glusterd (or sleep)
