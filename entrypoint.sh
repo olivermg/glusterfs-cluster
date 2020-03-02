@@ -1,4 +1,8 @@
-#!/bin/sh
+#!/usr/bin/env sh
+
+BASEDIR=/opt/glusterfs
+GLUSTERD=$BASEDIR/sbin/glusterd
+GLUSTER=$BASEDIR/sbin/gluster
 
 MODE=$1
 shift
@@ -17,17 +21,17 @@ fi
 # start glusterd and give it some time to do so:
 if [ "$MODE" != "client" ]; then
     echo "Starting glusterd..."
-    glusterd -N & sleep 5
+    ${GLUSTERD} -N -l /dev/stdout & sleep 5
 fi
 
 # if we're master, check if we're already connected to our peers. if not, connect:
 if [ "$MODE" = "master" ]; then
-    NOPEERS=$(gluster peer status | grep -i "Number of Peers" | sed -r -e 's/[[:space:]]+//g' | cut -f2 -d':')
-    if [ $NOPEERS -eq 0 ]; then
+    NOPEERS=$(${GLUSTER} peer status | grep -i "Number of Peers" | sed -r -e 's/[[:space:]]+//g' | cut -f2 -d':')
+    if [ ${NOPEERS:-0} -eq 0 ]; then
         echo "No peers found, will try to connect..."
         for P in "$@"; do
             echo -n "${P}: "
-            gluster peer probe $P
+            ${GLUSTER} peer probe $P
         done
     else
         echo "Peers already connected: $NOPEERS"

@@ -1,0 +1,19 @@
+FROM archlinux as build
+
+RUN pacman --noconfirm -Sy && \
+    pacman --noconfirm -S wget base-devel rpcsvc-proto python2 liburcu
+COPY install-gluster4.sh /root/
+RUN /root/install-gluster4.sh
+
+
+
+FROM archlinux as run
+
+RUN pacman --noconfirm -Sy && \
+    pacman --noconfirm -S grep libxml2 python2 liburcu
+
+COPY --from=build /opt/glusterfs /opt/glusterfs
+
+COPY entrypoint.sh /root/entrypoint.sh
+
+ENTRYPOINT ["/root/entrypoint.sh"]

@@ -2,9 +2,10 @@ version: '3.7'
 
 services:
   node0:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: my-glusterfs
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
     volumes:
       - ./volumes/node0/bricks:/var/gluster:Z
       - ./volumes/node0/state:/var/lib/glusterd:Z
@@ -24,7 +25,7 @@ services:
 #      - "49161:49161/tcp"
     cap_add:
       - CAP_SYS_ADMIN
-#      - CAP_NET_ADMIN  # just for debigging of network traffic
+#      - CAP_NET_ADMIN  # just for debugging of network traffic
     devices:
       - /dev/fuse  # for client usage, i.e. mounting glusterfs volumes
     restart: unless-stopped
@@ -34,9 +35,10 @@ services:
     command: ["master", "10", "node1", "node2"]
 
   node1:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: my-glusterfs
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
     volumes:
       - ./volumes/node1/bricks:/var/gluster:Z
       - ./volumes/node1/state:/var/lib/glusterd:Z
@@ -47,9 +49,10 @@ services:
     command: ["peer", "10"]
 
   node2:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: my-glusterfs
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
     volumes:
       - ./volumes/node2/bricks:/var/gluster:Z
       - ./volumes/node2/state:/var/lib/glusterd:Z
