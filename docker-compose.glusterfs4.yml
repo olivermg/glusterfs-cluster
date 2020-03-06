@@ -2,13 +2,13 @@ version: '3.7'
 
 services:
   node0:
-    image: my-glusterfs
+    image: my-glusterfs4
 #    build:
 #      context: .
 #      dockerfile: Dockerfile
     volumes:
       - ./volumes/node0/bricks:/var/gluster:Z
-      - ./volumes/node0/state:/var/lib/glusterd:Z
+      - ./volumes/node0/state:/opt/glusterfs/var/lib/glusterd:Z
       - ./entrypoint.sh:/root/entrypoint.sh:ro
 #    ports:
 #      - "24007:24007/tcp"
@@ -26,8 +26,8 @@ services:
     cap_add:
       - CAP_SYS_ADMIN
 #      - CAP_NET_ADMIN  # just for debugging of network traffic
-    devices:
-      - /dev/fuse  # for client usage, i.e. mounting glusterfs volumes
+#    devices:
+#      - /dev/fuse  # for client usage, i.e. mounting glusterfs volumes
     restart: unless-stopped
     depends_on:
       - node1
@@ -35,13 +35,13 @@ services:
     command: ["master", "10", "node1", "node2"]
 
   node1:
-    image: my-glusterfs
+    image: my-glusterfs4
 #    build:
 #      context: .
 #      dockerfile: Dockerfile
     volumes:
       - ./volumes/node1/bricks:/var/gluster:Z
-      - ./volumes/node1/state:/var/lib/glusterd:Z
+      - ./volumes/node1/state:/opt/glusterfs/var/lib/glusterd:Z
       - ./entrypoint.sh:/root/entrypoint.sh:ro
     cap_add:
       - CAP_SYS_ADMIN
@@ -49,33 +49,34 @@ services:
     command: ["peer", "10"]
 
   node2:
-    image: my-glusterfs
+    image: my-glusterfs4
 #    build:
 #      context: .
 #      dockerfile: Dockerfile
     volumes:
       - ./volumes/node2/bricks:/var/gluster:Z
-      - ./volumes/node2/state:/var/lib/glusterd:Z
+      - ./volumes/node2/state:/opt/glusterfs/var/lib/glusterd:Z
       - ./entrypoint.sh:/root/entrypoint.sh:ro
     cap_add:
       - CAP_SYS_ADMIN
     restart: unless-stopped
     command: ["peer", "10"]
 
-#  client:
+  client:
+    image: my-glusterfs4
 #    build:
 #      context: .
 #      dockerfile: Dockerfile
-#    volumes:
-#      - ./volumes/client/data:/var/gluster:Z
-#      - ./entrypoint.sh:/root/entrypoint.sh:ro
-#    devices:
-#      - /dev/fuse
-#    cap_add:
-#      - CAP_SYS_ADMIN
-#    restart: unless-stopped
-#    depends_on:
-#      - node0
-#      - node1
-#      - node2
-#    command: ["client", "10", "node0:/volrd0", "/var/gluster/data"]
+    volumes:
+      - ./volumes/client/data:/var/gluster:Z
+      - ./entrypoint.sh:/root/entrypoint.sh:ro
+    devices:
+      - /dev/fuse
+    cap_add:
+      - CAP_SYS_ADMIN
+    restart: unless-stopped
+    depends_on:
+      - node0
+      - node1
+      - node2
+    command: ["client", "10", "node0:/vol0", "/var/gluster/data"]

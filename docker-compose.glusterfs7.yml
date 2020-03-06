@@ -1,0 +1,82 @@
+version: '3.7'
+
+services:
+  node0:
+    image: my-glusterfs7
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+    volumes:
+      - ./volumes/node0/bricks:/var/gluster:Z
+      - ./volumes/node0/state:/opt/glusterfs/var/lib/glusterd:Z
+      - ./entrypoint.sh:/root/entrypoint.sh:ro
+#    ports:
+#      - "24007:24007/tcp"
+#      - "24008:24008/tcp"
+#      - "49152:49152/tcp"
+#      - "49153:49153/tcp"
+#      - "49154:49154/tcp"
+#      - "49155:49155/tcp"
+#      - "49156:49156/tcp"
+#      - "49157:49157/tcp"
+#      - "49158:49158/tcp"
+#      - "49159:49159/tcp"
+#      - "49160:49160/tcp"
+#      - "49161:49161/tcp"
+    cap_add:
+      - CAP_SYS_ADMIN
+#      - CAP_NET_ADMIN  # just for debugging of network traffic
+#    devices:
+#      - /dev/fuse  # for client usage, i.e. mounting glusterfs volumes
+    restart: unless-stopped
+    depends_on:
+      - node1
+      - node2
+    command: ["master", "10", "node1", "node2"]
+
+  node1:
+    image: my-glusterfs7
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+    volumes:
+      - ./volumes/node1/bricks:/var/gluster:Z
+      - ./volumes/node1/state:/opt/glusterfs/var/lib/glusterd:Z
+      - ./entrypoint.sh:/root/entrypoint.sh:ro
+    cap_add:
+      - CAP_SYS_ADMIN
+    restart: unless-stopped
+    command: ["peer", "10"]
+
+  node2:
+    image: my-glusterfs7
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+    volumes:
+      - ./volumes/node2/bricks:/var/gluster:Z
+      - ./volumes/node2/state:/opt/glusterfs/var/lib/glusterd:Z
+      - ./entrypoint.sh:/root/entrypoint.sh:ro
+    cap_add:
+      - CAP_SYS_ADMIN
+    restart: unless-stopped
+    command: ["peer", "10"]
+
+  client:
+    image: my-glusterfs7
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+    volumes:
+      - ./volumes/client/data:/var/gluster:Z
+      - ./entrypoint.sh:/root/entrypoint.sh:ro
+    devices:
+      - /dev/fuse
+    cap_add:
+      - CAP_SYS_ADMIN
+    restart: unless-stopped
+    depends_on:
+      - node0
+      - node1
+      - node2
+    command: ["client", "10", "node0:/vol0", "/var/gluster/data"]
