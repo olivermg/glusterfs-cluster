@@ -40,6 +40,8 @@ fi
 
 # if we're client, try to mount volume:
 if [ "$MODE" = "client" ]; then
+    echo "Waiting for cluster to come up..."
+    sleep 10
     echo "Mounting volume..."
     FROM=$1
     TO=$2
